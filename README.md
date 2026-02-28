@@ -1,16 +1,13 @@
-# alisons_machine_test
+# Alisons Machine Test
 
-A new Flutter project.
+Flutter ui machine test task.
 
-## Getting Started
+### Features completed
+- Login UI and authentication via post api
+- Home screen layout exactly to the figma constraints
+- Fetching and parsing home sections and product lists from endpoint using dio
 
-This project is a starting point for a Flutter application.
+### Setup
+Just run `flutter pub get` and target an emulator or real device. `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+No extra configs needed since no database or complex state maps. Added font families are already tied up in `pubspec.yaml`

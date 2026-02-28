@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:alisons_machine_test/utils/app_colors.dart';
 import 'package:alisons_machine_test/utils/app_text_styles.dart';
 import 'package:alisons_machine_test/widgets/custom_button.dart';
@@ -16,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -155,7 +157,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    CustomButton(text: 'Login', onPressed: login),
+                    CustomButton(
+                      text: _isLoading ? 'Loading...' : 'Login',
+                      onPressed: _isLoading ? null : login,
+                    ),
                     const SizedBox(height: 20),
 
                     Center(
@@ -187,18 +192,50 @@ class _LoginScreenState extends State<LoginScreen> {
   // Login Function
   //
   //
-  void login() {
+  void login() async {
     if (formKey.currentState!.validate()) {
-      if (emailController.text == "mobile@alisonsgroup.com" &&
-          passwordController.text == "12345678") {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Invalid email or password"),
-            backgroundColor: AppColors.primary,
-          ),
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        final response = await Dio().post(
+          'https://sungod.demospro2023.in.net/api/login',
+          queryParameters: {
+            'email_phone': emailController.text,
+            'password': passwordController.text,
+          },
         );
+
+        if (response.data != null && response.data['success'] == 1) {
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, '/home');
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Invalid email or password"),
+                backgroundColor: AppColors.primary,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Login failed. Try again."),
+              backgroundColor: AppColors.primary,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
