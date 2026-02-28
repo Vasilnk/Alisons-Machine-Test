@@ -58,4 +58,68 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.underline,
   );
+
+  static const TextStyle sectionTitle = TextStyle(
+    color: AppColors.textPrimary,
+    fontFamily: 'Lufga',
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle productTitle = TextStyle(
+    color: AppColors.textPrimary,
+    fontFamily: 'Lufga',
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle productSubtitle = TextStyle(
+    color: AppColors.primary,
+    fontFamily: 'Lufga',
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+  );
+
+  static const TextStyle price = TextStyle(
+    color: AppColors.primary,
+    fontFamily: 'Lufga',
+    fontSize: 12,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle strikePrice = TextStyle(
+    color: AppColors.greyText,
+    fontFamily: 'Lufga',
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.lineThrough,
+  );
+
+  static const TextStyle discountBadge = TextStyle(
+    color: AppColors.white,
+    fontFamily: 'Lufga',
+    fontSize: 9,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle bannerTitle = TextStyle(
+    color: AppColors.white,
+    fontFamily: 'Lufga',
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle bannerSubtitle = TextStyle(
+    color: AppColors.white,
+    fontFamily: 'Lufga',
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle bannerSmall = TextStyle(
+    color: AppColors.white,
+    fontFamily: 'Lufga',
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
+  );
 }

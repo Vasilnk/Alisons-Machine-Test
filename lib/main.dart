@@ -1,3 +1,4 @@
+import 'package:alisons_machine_test/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alisons_machine_test/screens/splash/splash_screen.dart';
 import 'package:alisons_machine_test/screens/login/login_screen.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }
