@@ -57,42 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Icon(Icons.favorite_border, color: AppColors.white),
           ),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0, right: 16.0),
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: AppColors.white,
-                ),
-              ),
-              if (homeData != null && homeData!.cartCount > 0)
-                Positioned(
-                  right: 16,
-                  top: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: AppColors.error,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
-                    child: Text(
-                      '${homeData!.cartCount}',
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
+          const Padding(
+            padding: EdgeInsets.only(left: 8.0, right: 16.0),
+            child: Icon(Icons.notifications_outlined, color: AppColors.white),
           ),
         ],
       ),
@@ -126,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (homeData!.categories.isNotEmpty) ...[
                       _buildSectionHeader('Categories'),
                       SizedBox(
-                        height: 100,
+                        height: 120,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: homeData!.categories.length,

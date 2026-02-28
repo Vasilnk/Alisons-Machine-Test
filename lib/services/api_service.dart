@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio = Dio();
+  static String? userId;
+  static String? userToken;
 
   static String getImageUrl(String filename) {
     if (filename.isEmpty) return 'https://picsum.photos/200'; // fallback
@@ -24,8 +26,8 @@ class ApiService {
         'https://sungod.demospro2023.in.net/api/home/en',
         options: Options(contentType: Headers.formUrlEncodedContentType),
         data: {
-          'id': '80y',
-          'token': 'qGLJyosEDVntg8KsWU8aVvX0Xc8eVfF5YDYecufR',
+          'id': userId ?? '80y',
+          'token': userToken ?? 'qGLJyosEDVntg8KsWU8aVvX0Xc8eVfF5YDYecufR',
         },
       );
 

@@ -11,7 +11,7 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70,
+      width: 85,
       margin: const EdgeInsets.only(right: 15),
       child: Column(
         children: [

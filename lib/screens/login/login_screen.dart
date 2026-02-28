@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:alisons_machine_test/services/api_service.dart';
 import 'package:alisons_machine_test/utils/app_colors.dart';
 import 'package:alisons_machine_test/utils/app_text_styles.dart';
 import 'package:alisons_machine_test/widgets/custom_button.dart';
@@ -208,6 +209,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (response.data != null && response.data['success'] == 1) {
+          final customerData = response.data['customerdata'];
+          if (customerData != null) {
+            ApiService.userId = customerData['id']?.toString();
+            ApiService.userToken = customerData['token']?.toString();
+          }
+
           if (mounted) {
             Navigator.pushReplacementNamed(context, '/home');
           }
