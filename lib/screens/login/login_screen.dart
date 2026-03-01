@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
-import 'package:alisons_machine_test/services/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:alisons_machine_test/providers/auth_provider.dart';
 import 'package:alisons_machine_test/utils/app_colors.dart';
 import 'package:alisons_machine_test/utils/app_text_styles.dart';
 import 'package:alisons_machine_test/widgets/custom_button.dart';
@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool obscurePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final imageHeight = screenHeight * 0.46;
+    final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -159,8 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
 
                     CustomButton(
-                      text: _isLoading ? 'Loading...' : 'Login',
-                      onPressed: _isLoading ? null : login,
+                      text: authProvider.isLoading ? 'Loading...' : 'Login',
+                      onPressed: authProvider.isLoading ? null : login,
                     ),
                     const SizedBox(height: 20),
 
@@ -195,54 +195,23 @@ class _LoginScreenState extends State<LoginScreen> {
   //
   void login() async {
     if (formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.login(
+        emailController.text,
+        passwordController.text,
+      );
 
-      try {
-        final response = await Dio().post(
-          'https://sungod.demospro2023.in.net/api/login',
-          queryParameters: {
-            'email_phone': emailController.text,
-            'password': passwordController.text,
-          },
+      if (!mounted) return;
+
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Invalid email or password"),
+            backgroundColor: AppColors.primary,
+          ),
         );
-
-        if (response.data != null && response.data['success'] == 1) {
-          final customerData = response.data['customerdata'];
-          if (customerData != null) {
-            ApiService.userId = customerData['id']?.toString();
-            ApiService.userToken = customerData['token']?.toString();
-          }
-
-          if (mounted) {
-            Navigator.pushReplacementNamed(context, '/home');
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Invalid email or password"),
-                backgroundColor: AppColors.primary,
-              ),
-            );
-          }
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Login failed. Try again."),
-              backgroundColor: AppColors.primary,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
       }
     }
   }

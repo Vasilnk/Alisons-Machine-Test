@@ -1,5 +1,7 @@
+import 'package:provider/provider.dart';
+import 'package:alisons_machine_test/providers/home_provider.dart';
 import 'package:alisons_machine_test/models/home_response.dart';
-import 'package:alisons_machine_test/services/api_service.dart';
+import 'package:alisons_machine_test/services/home_service.dart';
 import 'package:alisons_machine_test/utils/app_colors.dart';
 import 'package:alisons_machine_test/utils/app_text_styles.dart';
 import 'package:alisons_machine_test/widgets/category_item.dart';
@@ -15,27 +17,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoading = true;
-  HomeResponse? homeData;
-
   @override
   void initState() {
     super.initState();
-    _fetchData();
-  }
-
-  Future<void> _fetchData() async {
-    final data = await ApiService().getHomeData();
-    if (mounted) {
-      setState(() {
-        homeData = data;
-        _isLoading = false;
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomeProvider>(context, listen: false).fetchHomeData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context);
+    final isLoading = homeProvider.isLoading;
+    final homeData = homeProvider.homeData;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -63,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _isLoading
+      body: isLoading
           ? const Center(
               child: CircularProgressIndicator(color: AppColors.primary),
             )
@@ -73,7 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('Failed to load data'),
-                  TextButton(onPressed: _fetchData, child: const Text('Retry')),
+                  TextButton(
+                    onPressed: homeProvider.fetchHomeData,
+                    child: const Text('Retry'),
+                  ),
                 ],
               ),
             )
@@ -90,18 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 10),
 
                     // Categories
-                    if (homeData!.categories.isNotEmpty) ...[
+                    if (homeData.categories.isNotEmpty) ...[
                       _buildSectionHeader('Categories'),
                       SizedBox(
                         height: 120,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: homeData!.categories.length,
+                          itemCount: homeData.categories.length,
                           itemBuilder: (context, index) {
-                            final cat = homeData!.categories[index];
+                            final cat = homeData.categories[index];
                             return CategoryItem(
                               title: cat.name,
-                              imageUrl: ApiService.getImageUrl(cat.image),
+                              imageUrl: HomeService.getImageUrl(cat.image),
                             );
                           },
                         ),
@@ -109,15 +107,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
 
                     // Featured Products
-                    if (homeData!.ourProducts.isNotEmpty) ...[
+                    if (homeData.ourProducts.isNotEmpty) ...[
                       _buildSectionHeader('Featured Products'),
                       SizedBox(
                         height: 250,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: homeData!.ourProducts.length,
+                          itemCount: homeData.ourProducts.length,
                           itemBuilder: (context, index) {
-                            final prod = homeData!.ourProducts[index];
+                            final prod = homeData.ourProducts[index];
                             return _buildProductCard(prod);
                           },
                         ),
@@ -125,15 +123,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
 
                     // Daily Best Selling
-                    if (homeData!.bestSeller.isNotEmpty) ...[
+                    if (homeData.bestSeller.isNotEmpty) ...[
                       _buildSectionHeader('Daily Best Selling'),
                       SizedBox(
                         height: 250,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: homeData!.bestSeller.length,
+                          itemCount: homeData.bestSeller.length,
                           itemBuilder: (context, index) {
-                            final prod = homeData!.bestSeller[index];
+                            final prod = homeData.bestSeller[index];
                             return _buildProductCard(prod);
                           },
                         ),
@@ -149,15 +147,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 10),
 
                     // Recently Added
-                    if (homeData!.newArrivals.isNotEmpty) ...[
+                    if (homeData.newArrivals.isNotEmpty) ...[
                       _buildSectionHeader('Recently Added'),
                       SizedBox(
                         height: 250,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: homeData!.newArrivals.length,
+                          itemCount: homeData.newArrivals.length,
                           itemBuilder: (context, index) {
-                            final prod = homeData!.newArrivals[index];
+                            final prod = homeData.newArrivals[index];
                             return _buildProductCard(prod);
                           },
                         ),
@@ -184,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return ProductCard(
       discount: discount,
-      imageUrl: ApiService.getImageUrl(prod.image),
+      imageUrl: HomeService.getImageUrl(prod.image),
       category: prod.category,
       title: prod.name,
       price: prod.price,
